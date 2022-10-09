@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-
 const useTimer = (ini = 0) => {
   const addingHeaderForNumber = number => {
     return number >= 10 ? number : '0' + number
@@ -18,14 +17,13 @@ const useTimer = (ini = 0) => {
   const isStart = useRef(false)
   const active = useRef(false)
   const refInterval = useRef(ini)
-  const setTimer = () => {
-    setInterval(() => {
-      if (isStart.current)
-        setTime(convertSecondsToTimeString(++refInterval.current))
-    }, 1000)
-  }
   useEffect(() => {
-    setTimer()
+    const timerId = setInterval(() => {
+      if (isStart.current) {
+        setTime(convertSecondsToTimeString(++refInterval.current))
+      }
+    }, 1000)
+    return () => clearInterval(timerId)
   }, [])
 
   const startTimer = () => {
