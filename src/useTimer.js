@@ -1,24 +1,48 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from 'react'
 
 const useTimer = (ini = 0) => {
-  const [time, setTime] = "Your code here";
+  const addingHeaderForNumber = number => {
+    return number >= 10 ? number : '0' + number
+  }
+  const convertSecondsToTimeString = interval => {
+    let hours = Math.floor(interval / 3600)
+    interval = interval - hours * 3600
+    let minutes = Math.floor(interval / 60)
+    interval -= minutes * 60
 
-  const isStart = "Your code here";
-  const active = "Your code here";
-  const refInterval = "Your code here";
+    return `${addingHeaderForNumber(hours)} :  ${addingHeaderForNumber(
+      minutes
+    )} :  ${addingHeaderForNumber(interval)} `
+  }
+  const [time, setTime] = useState(() => convertSecondsToTimeString(0))
+  const isStart = useRef(false)
+  const active = useRef(false)
+  const refInterval = useRef(ini)
+  const setTimer = () => {
+    setInterval(() => {
+      if (isStart.current)
+        setTime(convertSecondsToTimeString(++refInterval.current))
+    }, 1000)
+  }
+  useEffect(() => {
+    setTimer()
+  }, [])
 
   const startTimer = () => {
-    "Your code here";
-    active.current.disabled = true;
-  };
+    isStart.current = true
+    active.current.disabled = true
+  }
   const stopTimer = () => {
-    "Your code here";
-  };
+    isStart.current = false
+    active.current.disabled = false
+  }
   const resetTimer = () => {
-    "Your code here";
-    active.current.disabled = false;
-  };
+    isStart.current = false
+    setTime(() => convertSecondsToTimeString(0))
+    refInterval.current = 0
+    active.current.disabled = false
+  }
 
-  return { time, startTimer, stopTimer, resetTimer, active };
-};
-export default useTimer;
+  return { time, startTimer, stopTimer, resetTimer, active }
+}
+export default useTimer
