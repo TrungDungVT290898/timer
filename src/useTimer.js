@@ -1,26 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
+import { formatTime } from './formatTime'
 const useTimer = (ini = 0) => {
-  const addingHeaderForNumber = number => {
-    return number >= 10 ? number : '0' + number
-  }
-  const convertSecondsToTimeString = interval => {
-    let hours = Math.floor(interval / 3600)
-    interval = interval - hours * 3600
-    let minutes = Math.floor(interval / 60)
-    interval -= minutes * 60
-
-    return `${addingHeaderForNumber(hours)} :  ${addingHeaderForNumber(
-      minutes
-    )} :  ${addingHeaderForNumber(interval)} `
-  }
-  const [time, setTime] = useState(() => convertSecondsToTimeString(0))
+  const [time, setTime] = useState(() => formatTime(0))
   const isStart = useRef(false)
   const active = useRef(false)
   const refInterval = useRef(ini)
   useEffect(() => {
     const timerId = setInterval(() => {
       if (isStart.current) {
-        setTime(convertSecondsToTimeString(++refInterval.current))
+        setTime(formatTime(++refInterval.current))
       }
     }, 1000)
     return () => clearInterval(timerId)
@@ -36,7 +24,7 @@ const useTimer = (ini = 0) => {
   }
   const resetTimer = () => {
     isStart.current = false
-    setTime(() => convertSecondsToTimeString(0))
+    setTime(() => formatTime(0))
     refInterval.current = 0
     active.current.disabled = false
   }
